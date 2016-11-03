@@ -1,10 +1,6 @@
-
 #! /bin/bash
 # Dijeesh Padinhaethil
-
 # Script to take MySQL backups to remote server using Percona Xtrabackup
-
-
 
 # Confirm log directory exist, create on if doesn't.
 
@@ -20,11 +16,11 @@ LOG_DIR="/var/log/xtrabackup"
 LOG="$LOG_DIR/${JOB_ID}_$(hostname)_backup.log"
 XBLOG="$LOG_DIR/${JOB_ID}_$(hostname)_xb.log"
 
-BACKUP_HOST="BACKUP_VAULT_IPADDR"
-BACKUP_USER="SSHUSER"
-MYSQL_USER="MYSQLUSER"
-MYSQL_PASS="MYSQLPASSWORD"
-BACKUP_FILE="$(hostname)_$(date +%Y%m%d%H)".tar
+BACKUP_HOST="BACKUP_VAULT_IP"
+BACKUP_USER="BACKUP_USER"
+MYSQL_USER="MYSQL_USER"
+MYSQL_PASS="MYSQL_PASSWORD"
+BACKUP_FILE="$(hostname)/$(hostname)_$(date +%Y%m%d%H)".tar
 
 
 
@@ -39,15 +35,21 @@ echo "$status"
         if [[ $status == ok ]]
                 then   # Proceed with backup process
                 echo "$(date +%F-%H:%M:%S) $JOB_ID SSH Connection success, proceeding with backup process" >> "$LOG"
+                ssh "$BACKUP_USER"@"$BACKUP_HOST" mkdir -p /data/xtrabackup/"$BACKUP_USER"/"$(hostname)"
                 innobackupex  --user="$MYSQL_USER" --password="$MYSQL_PASS"  --stream=tar ./ 2>> "$XBLOG" | ssh "$BACKUP_USER"@"$BACKUP_HOST" \ "cat - > $BACKUP_FILE "
 
                 # Verify xtrabackup logs and notify if MySQL backup has failed
-                if [ -z $(tail -1 "$XBLOG"| grep 'completed OK!') ]
-                      then
-                        echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, check backups xtrabackup logs for more information" >> "$LOG"
-                      else
-                        echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
+
+                value=$( grep -ic "completed OK!" "$XBLOG" )
+
+                if [ "$value" -eq 1 ]
+                  then
+                  echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
+                  else
+                  echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, check backups xtrabackup logs for more information" >> "$LOG"
                 fi
+
+
         else
             echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, unable to connect remote server" >> "$LOG"
             fi
