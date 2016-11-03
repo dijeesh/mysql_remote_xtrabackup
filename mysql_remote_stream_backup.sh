@@ -49,6 +49,6 @@ echo "$status"
                         echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
                 fi
         else
-            echo "Xtrabackup failed, unable to connect remote server" >> "$LOG"
+            echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, unable to connect remote server" >> "$LOG"
             fi
 exit
