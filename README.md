@@ -39,7 +39,7 @@ A simple bash script to push MySQL backups to remote backup vault using Percona 
     
 6. Add a cronjob to run the MySQL backups in 4 hour interval
 
-   > /etc/cron.d/xtrabackup | * */4 * * *   /opt/redux/xtrabackup/mysql_remote_stream_backup.sh
+   > /etc/cron.d/xtrabackup | 01 */4 * * *   /opt/redux/xtrabackup/mysql_remote_stream_backup.sh
 
 
 To extract Percona XtraBackup‘s archive you must use tar with -i option:
