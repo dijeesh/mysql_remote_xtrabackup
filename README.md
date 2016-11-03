@@ -45,3 +45,5 @@ A simple bash script to push MySQL backups to remote backup vault using Percona 
 To extract Percona XtraBackup‘s archive you must use tar with -i option:
 
   > tar -xizf backup.tar.gz
+
+Ref : https://www.percona.com/doc/percona-xtrabackup/2.4/installation.html for Installing Percona Xtrabackup on other distros
