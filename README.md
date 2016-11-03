@@ -41,3 +41,7 @@ A simple bash script to push MySQL backups to remote backup vault using Percona 
 
    > /etc/cron.d/xtrabackup | * */4 * * *   /opt/redux/xtrabackup/mysql_remote_stream_backup.sh
 
+
+To extract Percona XtraBackup‘s archive you must use tar with -i option:
+
+  > tar -xizf backup.tar.gz
