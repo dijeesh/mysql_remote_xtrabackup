@@ -32,6 +32,7 @@ echo "$(date +%F-%H:%M:%S) $JOB_ID SSH  Starting full backup process, job id $JO
 
 status=$(ssh -o BatchMode=yes -o ConnectTimeout=5 "$BACKUP_USER"@$BACKUP_HOST echo ok 2>&1)
 echo "$status"
+
         if [[ $status == ok ]]
                 then   # Proceed with backup process
                 echo "$(date +%F-%H:%M:%S) $JOB_ID SSH Connection success, proceeding with backup process" >> "$LOG"
@@ -39,18 +40,16 @@ echo "$status"
                 innobackupex  --user="$MYSQL_USER" --password="$MYSQL_PASS"  --stream=tar ./ 2>> "$XBLOG" | ssh "$BACKUP_USER"@"$BACKUP_HOST" \ "cat - > $BACKUP_FILE "
 
                 # Verify xtrabackup logs and notify if MySQL backup has failed
-
                 value=$( grep -ic "completed OK!" "$XBLOG" )
-
-                if [ "$value" -eq 1 ]
+                
+		if [ "$value" -eq 1 ]
                   then
                   echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
                   else
                   echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, check backups xtrabackup logs for more information" >> "$LOG"
                 fi
 
-
         else
-            echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, unable to connect remote server" >> "$LOG"
-            fi
+            	echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, unable to connect remote server" >> "$LOG"
+        fi
 exit
