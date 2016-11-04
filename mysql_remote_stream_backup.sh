@@ -42,7 +42,7 @@ echo "$status"
                 # Verify xtrabackup logs and notify if MySQL backup has failed
                 value=$( grep -ic "completed OK!" "$XBLOG" )
                 
-		if [ "$value" -eq 1 ]
+		if [ "$value" -eq 2 ]
                   then
                   echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
                   else
