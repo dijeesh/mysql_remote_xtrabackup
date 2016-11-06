@@ -13,6 +13,10 @@ A simple bash script to push MySQL backups to remote backup vault using Percona 
    > ssh-keygen -t rsa
    
    > Copy id_rsa.pub to remote server
+    
+   > ssh-keyscan -H BACKUP_VAULT_IP  >> ~/.ssh/known_hosts
+
+   > Add backup vault to known_hosts
 
 3. Install Percona Xtabackup
 
@@ -40,7 +44,6 @@ A simple bash script to push MySQL backups to remote backup vault using Percona 
 6. Add a cronjob to run the MySQL backups in 4 hour interval
 
    > /etc/cron.d/xtrabackup | 01 */4 * * *   /opt/redux/xtrabackup/mysql_remote_stream_backup.sh
-
 
 To extract Percona XtraBackup‘s archive you must use tar with -i option:
 
