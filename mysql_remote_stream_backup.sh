@@ -41,7 +41,7 @@ echo "$status"
 
                 # Verify xtrabackup logs and notify if MySQL backup has failed
                 value=$( grep -ic "completed OK!" "$XBLOG" )
-                
+
 		if [ "$value" -eq 2 ]
                   then
                   echo "$(date +%F-%H:%M:%S) $JOB_ID backup completes successfully" >> "$LOG"
@@ -52,4 +52,9 @@ echo "$status"
         else
             	echo "$(date +%F-%H:%M:%S) $JOB_ID Xtrabackup failed, unable to connect remote server" >> "$LOG"
         fi
+
+# Clear log files
+
+/usr/bin/find "$LOG_DIR" -type f -name "*.log" -mtime +7  -exec rm -rf  {} \;
+
 exit
